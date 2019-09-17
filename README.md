@@ -1,4 +1,4 @@
-# Birmingham Uni timtable extractor
+# Birmingham Uni timetable extractor
 
 The University of Birmingham has a lovely service for accessing timeatables
 that is completely incompatible with any reasonable system. This is a simple
