@@ -1,13 +1,21 @@
+import enum
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 
 TIMETABLE = "https://onlinetimetables.bham.ac.uk/Timetable/current_academic_year_2/default.aspx"
 
+class WeekSelection(enum.Enum):
+    CURRENT = 'This Week'
+    NEXT = 'Next Week'
+    ALL = '*All Term Time'
+
 class Frame:
-    def __init__(self, username, password):
+    def __init__(self, username, password, week=WeekSelection.ALL):
         self.username = username
         self.password = password
+        self.week = week.value
 
     @property
     def CHROME(self):
@@ -37,7 +45,7 @@ class Frame:
         # select options from drop downs
         select = Select(driver.find_element_by_id("lbWeeks"))
         select.deselect_all()
-        select.select_by_visible_text('*All Term Time')
+        select.select_by_visible_text(self.week)
 
         select = Select(driver.find_element_by_id("lbDays"))
         select.deselect_all()
