@@ -19,7 +19,7 @@ For a command line tool, bhamcal is very easy to use.
 
 ## License
 
-Like [timetable-converter][timetable-converter], this project is licensed
-under the GPLv3. Enjoy! :tada:
+Like [OnlineBhamTimetableConverter][timetable-converter], this project is
+licensed under the GPLv3. Enjoy! :tada:
 
 [timetable-converter]: https://github.com/tomhmoses/OnlineBhamTimetableConverter
