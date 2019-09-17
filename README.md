@@ -22,4 +22,4 @@ For a command line tool, bhamcal is very easy to use.
 Like [timetable-converter][timetable-converter], this project is licensed
 under the GPLv3. Enjoy! :tada:
 
-[timtable-converter]: [https://github.com/tomhmoses/OnlineBhamTimetableConverter]
+[timetable-converter]: https://github.com/tomhmoses/OnlineBhamTimetableConverter
