@@ -2,7 +2,7 @@ import click
 
 from .frame import Frame, WeekSelection
 from .extractor import extract
-from .csv import CSV
+from .output.csv import CSV
 
 @click.command("bhamcal")
 @click.argument('username')
