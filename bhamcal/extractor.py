@@ -1,8 +1,9 @@
-def changeDateFormat(originalDate, monthDict):
-    #start with 01 Oct 2018
-    #end with 10/01/2018
+from .event import Event
+from datetime import datetime
+
+def changeDateFormat(originalDate):
     bits = originalDate.split(" ")
-    newDate = monthDict[bits[1]]+"/"+bits[0]+"/"+bits[2]
+    newDate = MONTHS[bits[1]]+"/"+bits[0]+"/"+bits[2]
     return newDate
 
 def cutSectionFromText(text,startPosition, endPosition):
@@ -34,49 +35,47 @@ def getTableFromFrame(text):
     return text
 
 def extract(frameHTML):
-    csv = "Start date,End date,Subject,Start Time,End Time,Location,Description"
-    monthDict = {
-        "Jan":"01",
-        "Feb":"02",
-        "Mar":"03",
-        "Apr":"04",
-        "May":"05",
-        "Jun":"06",
-        "Jul":"07",
-        "Aug":"08",
-        "Sep":"09",
-        "Oct":"10",
-        "Nov":"11",
-        "Dec":"12"
-    }
-
     wholeTable = getTableFromFrame(frameHTML)
 
-    #splits at row breaks
+    csv = "Start date,End date,Subject,Start Time,End Time,Location,Description"
+
+    # splits at row breaks
     listOfRows = wholeTable.replace("</tr></tbody><tr>","</tr><tr>").split("</tr><tr>")
 
-    temp = ""
     for eachEvent in listOfRows:
         eachEvent = eachEvent.replace("</td>","").replace("&amp;","&").replace("&nbsp;"," ").replace(",","")
-        #splits at element break and removes first empty item from list
-        temp += "\n\n" + eachEvent.split("<td>")[0]
-        eventInfoList = eachEvent.split("<td>")[1:]
-        csvLine = "\n"
-        #adds start and end date (which are the same)
-        for count in range(2):
-            csvLine += changeDateFormat(eventInfoList[0],monthDict) + ","
-        #adds basic info
-        for number in [1,3,4,5]:
-            csvLine += eventInfoList[number] + ","
-        #adds description
-        csvLine += '"'
-        if eventInfoList[6].replace(" ","") != "":
-            csvLine += 'With: ' + eventInfoList[6] + '\n'
-        csvLine += 'Activity: ' + eventInfoList[1] + '\n'
-        csvLine += 'Type: ' + eventInfoList[2] + '\n'
-        csvLine += 'Department: ' + eventInfoList[7] + '\n'
-        csvLine += '"'
 
-        csv += csvLine
+        # splits at element break and removes first empty item from list
+        eventInfoList = eachEvent.split("<td>")[1:]
+
+        day = changeDateFormat(eventInfoList[0])
+        subject = eventInfoList[1]
+        start_time = eventInfoList[3]
+        end_time = eventInfoList[4]
+        location = eventInfoList[5]
+
+        description = ""
+        description += 'With: ' + eventInfoList[6] + '\n'
+        description += 'Activity: ' + eventInfoList[1] + '\n'
+        description += 'Type: ' + eventInfoList[2] + '\n'
+        description += 'Department: ' + eventInfoList[7] + '\n'
+
+        entry = ','.join([day, day, subject, start_time, end_time, location, '"' + description + '"'])
+        csv += entry + '\n'
 
     return csv
+
+MONTHS = {
+    "Jan": "01",
+    "Feb": "02",
+    "Mar": "03",
+    "Apr": "04",
+    "May": "05",
+    "Jun": "06",
+    "Jul": "07",
+    "Aug": "08",
+    "Sep": "09",
+    "Oct": "10",
+    "Nov": "11",
+    "Dec": "12"
+}
