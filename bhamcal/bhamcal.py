@@ -2,6 +2,7 @@ import click
 
 from .frame import Frame, WeekSelection
 from .extractor import extract
+from .csv import CSV
 
 @click.command("bhamcal")
 @click.argument('username')
@@ -19,6 +20,7 @@ def main(username, password, output, week):
     fr = Frame(username, password, week)
     source = fr.extract(fr.CHROME)
 
-    calendar = extract(source)
+    events = extract(source)
+    calendar = CSV(events)
 
     output.write(calendar)

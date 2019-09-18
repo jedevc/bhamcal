@@ -1,4 +1,4 @@
-from .event import Event
+from .event import CalendarEvent
 from datetime import datetime
 
 def changeDateFormat(originalDate):
@@ -37,7 +37,7 @@ def getTableFromFrame(text):
 def extract(frameHTML):
     wholeTable = getTableFromFrame(frameHTML)
 
-    csv = "Start date,End date,Subject,Start Time,End Time,Location,Description"
+    events = []
 
     # splits at row breaks
     listOfRows = wholeTable.replace("</tr></tbody><tr>","</tr><tr>").split("</tr><tr>")
@@ -48,7 +48,7 @@ def extract(frameHTML):
         # splits at element break and removes first empty item from list
         eventInfoList = eachEvent.split("<td>")[1:]
 
-        day = changeDateFormat(eventInfoList[0])
+        day = eventInfoList[0]
         subject = eventInfoList[1]
         start_time = eventInfoList[3]
         end_time = eventInfoList[4]
@@ -60,22 +60,16 @@ def extract(frameHTML):
         description += 'Type: ' + eventInfoList[2] + '\n'
         description += 'Department: ' + eventInfoList[7] + '\n'
 
-        entry = ','.join([day, day, subject, start_time, end_time, location, '"' + description + '"'])
-        csv += entry + '\n'
+        event = CalendarEvent(
+            start=extract_datetime(day, start_time),
+            end=extract_datetime(day, end_time),
+            subject=subject,
+            location=location,
+            description=description
+        )
+        events.append(event)
 
-    return csv
+    return events
 
-MONTHS = {
-    "Jan": "01",
-    "Feb": "02",
-    "Mar": "03",
-    "Apr": "04",
-    "May": "05",
-    "Jun": "06",
-    "Jul": "07",
-    "Aug": "08",
-    "Sep": "09",
-    "Oct": "10",
-    "Nov": "11",
-    "Dec": "12"
-}
+def extract_datetime(date, time):
+    return datetime.strptime(date + " " + time, "%d %b %Y %H:%M")
