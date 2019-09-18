@@ -37,8 +37,6 @@ def getTableFromFrame(text):
 def extract(frameHTML):
     wholeTable = getTableFromFrame(frameHTML)
 
-    events = []
-
     # splits at row breaks
     listOfRows = wholeTable.replace("</tr></tbody><tr>","</tr><tr>").split("</tr><tr>")
 
@@ -67,9 +65,7 @@ def extract(frameHTML):
             location=location,
             description=description
         )
-        events.append(event)
-
-    return events
+        yield event
 
 def extract_datetime(date, time):
     return datetime.strptime(date + " " + time, "%d %b %Y %H:%M")
