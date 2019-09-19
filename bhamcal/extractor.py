@@ -1,3 +1,5 @@
+import re
+
 from .event import CalendarEvent
 from datetime import datetime
 
@@ -40,22 +42,29 @@ def extract(frameHTML):
         # splits at element break and removes first empty item from list
         event_info = row.split("<td>")[1:]
 
+        # extract info
         day = event_info[0]
-        subject = event_info[1]
+        title = event_info[1]
         start_time = event_info[3]
         end_time = event_info[4]
         location = event_info[5]
 
+        # process subject title
+        title = title.split('/')[0]
+        title = re.sub(r"\([^)]*\)", "", title)
+        title = title.strip()
+
+        # build description
         description = ""
         description += 'With: ' + event_info[6] + '\n'
         description += 'Activity: ' + event_info[1] + '\n'
         description += 'Type: ' + event_info[2] + '\n'
-        description += 'Department: ' + event_info[7] + '\n'
+        description += 'Department: ' + event_info[7]
 
         event = CalendarEvent(
             start=extract_datetime(day, start_time),
             end=extract_datetime(day, end_time),
-            subject=subject,
+            subject=title,
             location=location,
             description=description
         )
