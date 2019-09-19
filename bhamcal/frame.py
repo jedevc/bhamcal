@@ -3,6 +3,7 @@ import enum
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
 
 TIMETABLE = "https://onlinetimetables.bham.ac.uk/Timetable/current_academic_year_2/default.aspx"
 
@@ -31,7 +32,13 @@ class Frame:
         driver = webdriver.Firefox(options=options)
         return driver
 
-    def extract(self, driver):
+    def fetch(self, driver):
+        try:
+            return self._download(driver)
+        except NoSuchElementException:
+            raise FrameFetchError
+
+    def _download(self, driver):
         driver.get(TIMETABLE)
 
         # log in
@@ -65,3 +72,6 @@ class Frame:
         driver.quit()
 
         return source
+
+class FrameFetchError(RuntimeError):
+    pass
