@@ -19,7 +19,7 @@ from .output.icalendar import iCalendar
               help="Process only events from this week.")
 @click.option('--next-week', 'week', flag_value=WeekSelection.NEXT,
               help="Process only events from next week.")
-@click.password_option(
+@click.password_option(confirmation_prompt=False,
               help="Override password to my.bham account.")
 def main(username, password, form, output, week):
     fr = Frame(username, password, week)
