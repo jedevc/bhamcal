@@ -12,9 +12,24 @@ to third-party services, and I just need a simple command line tool.
 
 ## Usage
 
-For a command line tool, bhamcal is very easy to use.
+At the moment, there is no way to install bhamcal system-wide, so you'll have
+to download and run it from the repository. Note that bhamcal uses
+[Pipenv](https://pipenv.readthedocs.io/en/latest/).
 
+    $ git clone https://github.com/jedevc/bhamcal.git
+    $ cd bhamcal
     $ pipenv shell
+
+To generate a calendar in CSV format:
+
+    $ python -m bhamcal <username> -o calendar.csv
+
+To generate a calendar in iCal format:
+
+    $ python -m bhamcal <username> -f ical -o calendar.ics
+
+For other options, see the help:
+
     $ python -m bhamcal --help
 
 ## License
