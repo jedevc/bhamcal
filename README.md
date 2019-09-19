@@ -1,6 +1,6 @@
 # Birmingham Uni timetable extractor
 
-The University of Birmingham has a lovely service for accessing timeatables
+The University of Birmingham has a lovely service for accessing timetables
 that is completely incompatible with any reasonable system. This is a simple
 command line tool to extract the data from my.bham and generate something
 compatible with a reasonable system.
