@@ -1,74 +1,52 @@
 import re
-
-from .event import CalendarEvent
 from datetime import datetime
 
-def cutSectionFromText(text, start, end):
-    return text[:start] + text[end:]
+from bs4 import BeautifulSoup
 
-def getTableFromFrame(text):
-    text = text.replace('\n', '').replace('\r', '')
+from .event import CalendarEvent
 
-    # cuts off top
-    startPosition = text.find("""<p><span class="labelone">""") - len("</table>")
-    text = text[startPosition:]
-    # cuts off bottom
-    endPosition = text.find("""<table class="footer-border-args" """)
-    text = text[:endPosition]
+def extract(frame):
+    soup = BeautifulSoup(frame, 'html.parser')
+    spreadsheets = soup.find_all('table', class_='spreadsheet')
 
-    # removes day bits
-    while """<span class="labelone">""" in text:
-        startPosition = text.find("</table>")
-        # will then find if this day contains any info
-        nextCloseTablePosition = text[startPosition + 3:].find("</table>") + startPosition + 3
-        substring = text[startPosition + len("</table>"):nextCloseTablePosition]
-        if "columnTitles" in substring:
-            endPosition = text[startPosition:].find( "</tr>") + 5 + startPosition
-        else:
-            endPosition = text[startPosition + 3:].find("</table>") + startPosition + 3
-        text = cutSectionFromText(text, startPosition, endPosition)
+    for spreadsheet in spreadsheets:
+        rows = spreadsheet.find_all('tr')[1:]
+        for row in rows:
+            yield extract_event(row)
 
-    return text
+def extract_event(table_row):
+    entries = table_row.find_all('td')
+    entries = [entry.string.strip() for entry in entries]
 
-def extract(frameHTML):
-    table = getTableFromFrame(frameHTML)
+    # extract data from table
+    day = entries[0]
+    title = entries[1]
+    event_type = entries[2]
+    start_time = entries[3]
+    end_time = entries[4]
+    location = entries[5]
+    lecturer = entries[6]
+    department = entries[7]
 
-    # splits at row breaks
-    rows = table.replace("</tr></tbody><tr>","</tr><tr>").split("</tr><tr>")
+    # process subject title
+    name = title.split('/')[0]
+    name = re.sub(r"\([^)]*\)", "", name)
+    name = name.strip()
 
-    for row in rows:
-        row = row.replace("</td>","").replace("&amp;","&").replace("&nbsp;"," ").replace(",","")
+    # build description
+    description = ""
+    description += 'With: ' + lecturer + '\n'
+    description += 'Activity: ' + title + '\n'
+    description += 'Type: ' + event_type + '\n'
+    description += 'Department: ' + department
 
-        # splits at element break and removes first empty item from list
-        event_info = row.split("<td>")[1:]
-
-        # extract info
-        day = event_info[0]
-        title = event_info[1]
-        start_time = event_info[3]
-        end_time = event_info[4]
-        location = event_info[5]
-
-        # process subject title
-        title = title.split('/')[0]
-        title = re.sub(r"\([^)]*\)", "", title)
-        title = title.strip()
-
-        # build description
-        description = ""
-        description += 'With: ' + event_info[6] + '\n'
-        description += 'Activity: ' + event_info[1] + '\n'
-        description += 'Type: ' + event_info[2] + '\n'
-        description += 'Department: ' + event_info[7]
-
-        event = CalendarEvent(
-            start=extract_datetime(day, start_time),
-            end=extract_datetime(day, end_time),
-            subject=title,
-            location=location,
-            description=description
-        )
-        yield event
+    return CalendarEvent(
+        start=extract_datetime(day, start_time),
+        end=extract_datetime(day, end_time),
+        subject=name,
+        location=location,
+        description=description
+    )
 
 def extract_datetime(date, time):
     return datetime.strptime(date + " " + time, "%d %b %Y %H:%M")
