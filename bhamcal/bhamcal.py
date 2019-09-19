@@ -14,6 +14,8 @@ from .output.icalendar import iCalendar
 @click.option('-f', '--format', 'form', default='csv',
               type=click.Choice(['csv', 'ical']),
               help="Output format of calendar.")
+@click.option('--headless/--head', 'headless', default=True,
+              help="Change whether the browser is run headlessly.")
 @click.option('--all', 'week', flag_value=frame.WeekSelection.ALL,
               default=True, help="Process all available events (default).")
 @click.option('--this-week', 'week', flag_value=frame.WeekSelection.CURRENT,
@@ -22,11 +24,12 @@ from .output.icalendar import iCalendar
               help="Process only events from next week.")
 @click.password_option(confirmation_prompt=False,
               help="Override password to my.bham account.")
-def main(username, password, form, output, week):
+def main(username, password, form, headless, output, week):
     fr = frame.Frame(username, password, week)
     log('downloading timetable...', Message.INFO, overwrite=True)
     try:
-        source = fr.fetch(fr.CHROME)
+        browser = fr.CHROME(headless)
+        source = fr.fetch(browser)
     except frame.FrameFetchError:
         log('failed to download timetable', Message.ERROR)
         log()

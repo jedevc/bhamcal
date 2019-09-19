@@ -18,17 +18,17 @@ class Frame:
         self.password = password
         self.week = week.value
 
-    @property
-    def CHROME(self):
+    def CHROME(self, headless=True):
         options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
+        if headless:
+            options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
         return driver
 
-    @property
-    def FIREFOX(self):
+    def FIREFOX(self, headless=True):
         options = webdriver.FirefoxOptions()
-        options.add_argument('--headless')
+        if headless:
+            options.add_argument('--headless')
         driver = webdriver.Firefox(options=options)
         return driver
 
