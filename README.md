@@ -10,27 +10,38 @@ work on [OnlineBhamTimetableConverter][timetable-converter]. It's a great
 project, however, I'm generally unhappy about having to give my password off
 to third-party services, and I just need a simple command line tool.
 
-## Usage
+## Installation
 
 At the moment, there is no way to install bhamcal system-wide, so you'll have
-to download and run it from the repository. Note that bhamcal uses
-[Pipenv](https://pipenv.readthedocs.io/en/latest/).
+to download and run it from the repository.
 
     $ git clone https://github.com/jedevc/bhamcal.git
     $ cd bhamcal
-    $ pipenv shell
+    $ pip3 install -e .
+
+## Usage
 
 To generate a calendar in CSV format:
 
-    $ python -m bhamcal <username> -o calendar.csv
+    $ bhamcal <username> -o calendar.csv
 
 To generate a calendar in iCal format:
 
-    $ python -m bhamcal <username> -f ical -o calendar.ics
+    $ bhamcal <username> -f ical -o calendar.ics
 
 For other options, see the help:
 
-    $ python -m bhamcal --help
+    $ bhamcal --help
+
+## Development
+
+To develop, first set up the pipenv:
+
+    $ pipenv shell
+
+Then, you can run the tool using:
+
+    $ python -m bhamcal
 
 ## License
 
