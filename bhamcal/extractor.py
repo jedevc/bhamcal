@@ -32,6 +32,7 @@ def extract_event(table_row):
     name = title.split('/')[0]
     name = re.sub(r"\([^)]*\)", "", name)
     name = name.strip()
+    name = re.sub(r"^LI ", "", name)
 
     # build description
     description = ""
