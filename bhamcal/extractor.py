@@ -29,9 +29,9 @@ def extract_event(table_row):
     department = entries[7]
 
     # process subject title
-    name = title.split('/')[0]
-    name = re.sub(r"\([^)]*\)", "", name)
+    name = title
     name = name.strip()
+    name = re.match("(.*)\([^)]*\)/", name).group(1)
     name = re.sub(r"^LI ", "", name)
 
     # build description
