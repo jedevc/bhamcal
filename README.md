@@ -12,8 +12,10 @@ to third-party services, and I just need a simple command line tool.
 
 ## Installation
 
-At the moment, there is no way to install bhamcal system-wide, so you'll have
-to download and run it from the repository.
+bhamcal requires at least python 3.7, as it uses some slightly more modern
+features.
+
+To install it, clone the repository, and install it using pip:
 
     $ git clone https://github.com/jedevc/bhamcal.git
     $ cd bhamcal
