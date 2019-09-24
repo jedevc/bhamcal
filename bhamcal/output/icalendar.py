@@ -1,6 +1,8 @@
-from uuid import uuid4 as uuid
+from collections import Counter
 
 def iCalendar(events):
+    codes = Counter()
+
     ical = '\r\n'.join([
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
@@ -8,9 +10,12 @@ def iCalendar(events):
     ])
 
     for event in events:
+        uid_prefix = event.subject_code + '/' + event.event_type[:3].upper()
+        codes[uid_prefix] += 1
+
         vevent = [
             "BEGIN:VEVENT",
-            "UID:" + str(uuid()),
+            "UID:" + uid_prefix + str(codes[uid_prefix]),
             "SUMMARY:" + event.subject,
             "DTSTAMP:" + format_date(event.start),
             "DTSTART:" + format_date(event.start),

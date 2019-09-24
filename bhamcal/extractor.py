@@ -31,8 +31,12 @@ def extract_event(table_row):
     # process subject title
     name = title
     name = name.strip()
-    name = re.match("(.*)\([^)]*\)/", name).group(1)
+    match = re.match("(.+)\((\d+)\)/", name)
+    if not match:
+        raise ValueError("invalid lecture title")
+    name = match.group(1)
     name = re.sub(r"^LI ", "", name)
+    code = match.group(2)
 
     # build description
     description = ""
@@ -45,6 +49,8 @@ def extract_event(table_row):
         start=extract_datetime(day, start_time),
         end=extract_datetime(day, end_time),
         subject=name,
+        subject_code=code,
+        event_type=event_type,
         location=location,
         description=description
     )

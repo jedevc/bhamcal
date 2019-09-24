@@ -38,6 +38,7 @@ def main(username, password, form, headless, output, week):
     log(f'downloaded timetable for {username}', Message.INFO)
 
     events = list(extract(source))
+    events.sort(key=lambda x: x.start)
     log(f'extracted {len(events)} events', Message.INFO)
 
     if form == 'csv':
