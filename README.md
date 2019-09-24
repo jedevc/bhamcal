@@ -15,7 +15,11 @@ to third-party services, and I just need a simple command line tool.
 bhamcal requires at least python 3.7, as it uses some slightly more modern
 features.
 
-To install it, clone the repository, and install it using pip:
+Additionally, chromedriver is required for selenium to scrape the calendar
+data - to install it, see [here][selenium-install].
+
+Finally, to actually install bhamcal, clone the repository, and install it
+using pip:
 
     $ git clone https://github.com/jedevc/bhamcal.git
     $ cd bhamcal
@@ -51,3 +55,4 @@ Like [OnlineBhamTimetableConverter][timetable-converter], this project is
 licensed under the GPLv3. Enjoy! :tada:
 
 [timetable-converter]: https://github.com/tomhmoses/OnlineBhamTimetableConverter
+[selenium-install]: https://selenium-python.readthedocs.io/installation.html
