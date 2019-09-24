@@ -27,13 +27,9 @@ using pip:
 
 ## Usage
 
-To generate a calendar in CSV format:
-
-    $ bhamcal <username> -o calendar.csv
-
 To generate a calendar in iCal format:
 
-    $ bhamcal <username> -f ical -o calendar.ics
+    $ bhamcal <username> -o calendar.ical
 
 For other options, see the help:
 

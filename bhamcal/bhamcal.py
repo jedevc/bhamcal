@@ -11,7 +11,7 @@ from .output.icalendar import iCalendar
 @click.argument('username')
 @click.option('-o', '--output', default='-', type=click.File('w'),
               help="File to output the results to.")
-@click.option('-f', '--format', 'form', default='csv',
+@click.option('-f', '--format', 'form', default='ical',
               type=click.Choice(['csv', 'ical']),
               help="Output format of calendar.")
 @click.option('--headless/--head', 'headless', default=True,
