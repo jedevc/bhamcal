@@ -67,7 +67,7 @@ class Frame:
         # actually get the calendar
         driver.find_element_by_id("bGetTimetable").click()
 
-        #gets page source
+        # gets page source
         source = driver.page_source
         driver.quit()
 
