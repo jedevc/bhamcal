@@ -32,11 +32,18 @@ def extract_event(table_row):
     name = title
     name = name.strip()
     match = re.match("(.+)\((\d+)\)/", name)
-    if not match:
-        raise ValueError("invalid lecture title")
-    name = match.group(1)
+    if match:
+        name = match.group(1)
+        code = match.group(2)
+    else:
+        match = re.match("(.+)/", name)
+        if match:
+            name = match.group(1)
+            code = name.upper().replace(' ', '')
+        else:
+            raise ValueError("invalid lecture title")
+
     name = re.sub(r"^LI ", "", name)
-    code = match.group(2)
 
     # build description
     description = ""
