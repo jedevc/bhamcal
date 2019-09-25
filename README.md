@@ -25,6 +25,10 @@ using pip:
     $ cd bhamcal
     $ pip3 install -e .
 
+### Windows
+
+Put the `chromedriver.exe` inside `C:\Windows`.
+
 ## Usage
 
 To generate a calendar in iCal format:
