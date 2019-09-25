@@ -1,4 +1,16 @@
+# python
 __pycache__/
+
+# pip
 *.egg-info/
+
+# virtualenv
+env/
+venv/
+.env/
+.venv/
+
+# generated calendars
 *.ical
 *.csv
+
