@@ -16,7 +16,8 @@ bhamcal requires at least python 3.7, as it uses some slightly more modern
 features.
 
 Additionally, chromedriver is required for selenium to scrape the calendar
-data - to install it, see [here][selenium-install].
+data. To install it, see [here][selenium-install] (for windows-specific
+instructions, see below).
 
 Finally, to actually install bhamcal, clone the repository, and install it
 using pip:
@@ -25,9 +26,16 @@ using pip:
     $ cd bhamcal
     $ pip3 install -e .
 
+If you don't want to install it system-wide, you can run it as a module, after
+installing the dependencies:
+
+    $ pip install -r requirements.txt
+    $ python3 -m bhamcal
+
 ### Windows
 
-Put the `chromedriver.exe` inside `C:\Windows`.
+- Download `chromedriver.exe` from [here](https://sites.google.com/a/chromium.org/chromedriver/downloads).
+- Put it inside `C:\Windows`.
 
 ## Usage
 
@@ -48,6 +56,9 @@ To develop, first set up the pipenv:
 Then, you can run the tool using:
 
     $ python -m bhamcal
+
+If you add new dependencies, make sure that they are reflected in both
+`requirements.txt` and `setup.py`.
 
 ## License
 
