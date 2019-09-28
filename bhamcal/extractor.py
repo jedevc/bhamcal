@@ -20,7 +20,7 @@ def extract_event(table_row):
 
     # extract data from table
     day = entries[0]
-    title = entries[1]
+    title = entries[1].strip()
     event_type = entries[2]
     start_time = entries[3]
     end_time = entries[4]
@@ -29,19 +29,18 @@ def extract_event(table_row):
     department = entries[7]
 
     # process subject title
-    name = title
-    name = name.strip()
-    match = re.match("(.+)\((\d+)\)/", name)
+    match = re.match("(.+)\((\d+)\)/", title)
     if match:
         name = match.group(1)
         code = match.group(2)
     else:
-        match = re.match("(.+)/", name)
+        match = re.match("(.+)/", title)
         if match:
             name = match.group(1)
             code = name.upper().replace(' ', '')
         else:
-            raise ValueError("invalid lecture title")
+            name = title
+            code = title.upper().replace(' ', '')
 
     name = re.sub(r"^LI ", "", name)
 
