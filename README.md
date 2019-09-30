@@ -41,7 +41,7 @@ installing the dependencies:
 
 To generate a calendar in iCal format:
 
-    $ bhamcal <username> -o calendar.ical
+    $ bhamcal <username> -o calendar.ics
 
 For other options, see the help:
 
