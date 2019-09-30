@@ -2,3 +2,4 @@ selenium
 click
 beautifulsoup4
 colorama
+pytz

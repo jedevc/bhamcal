@@ -23,6 +23,7 @@ setuptools.setup(
         'click',
         'beautifulsoup4',
         'colorama',
+        'pytz'
     ],
 
     entry_points={

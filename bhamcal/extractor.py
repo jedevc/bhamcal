@@ -1,9 +1,12 @@
 import re
 from datetime import datetime
 
+import pytz
 from bs4 import BeautifulSoup
 
 from .event import CalendarEvent
+
+DEFAULT_TIMEZONE = pytz.timezone('Europe/London')
 
 def extract(frame):
     soup = BeautifulSoup(frame, 'html.parser')
@@ -62,4 +65,7 @@ def extract_event(table_row):
     )
 
 def extract_datetime(date, time):
-    return datetime.strptime(date + " " + time, "%d %b %Y %H:%M")
+    dt = datetime.strptime(date + " " + time, "%d %b %Y %H:%M")
+    dt = DEFAULT_TIMEZONE.localize(dt)
+    dt = dt.astimezone(pytz.utc)
+    return dt

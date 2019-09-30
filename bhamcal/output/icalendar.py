@@ -32,4 +32,4 @@ def iCalendar(events):
     return ical
 
 def format_date(date):
-    return date.strftime("%Y%m%dT%H%M%S")
+    return date.strftime("%Y%m%dT%H%M%SZ")
