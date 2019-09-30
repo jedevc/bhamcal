@@ -13,4 +13,4 @@ venv/
 # generated calendars
 *.ical
 *.csv
-
+*.ics
