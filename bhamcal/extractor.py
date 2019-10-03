@@ -7,6 +7,12 @@ from bs4 import BeautifulSoup
 from .event import CalendarEvent
 
 DEFAULT_TIMEZONE = pytz.timezone('Europe/London')
+# Remove module codes, LM and/or LH and extended.
+one = r"(?P<code>\([0-9]+/[0-9]+\))|(?P<prefix>LM/LH|LH/LM|LH|LM|LI)|(?P<extended>\(Extended\)?)"
+# Remove duplicates in the case of the name being present twice on some extended modules.
+two = r"(?P<one>^.*/)"
+round_one_re = re.compile(one, re.MULTILINE)
+round_two_re = re.compile(two, re.MULTILINE)
 
 def extract(frame):
     soup = BeautifulSoup(frame, 'html.parser')
@@ -45,7 +51,7 @@ def extract_event(table_row):
             name = title
             code = title.upper().replace(' ', '')
 
-    name = re.sub(r"^LI ", "", name)
+    name = clean_subject(name)
 
     # build description
     description = ""
@@ -69,3 +75,10 @@ def extract_datetime(date, time):
     dt = DEFAULT_TIMEZONE.localize(dt)
     dt = dt.astimezone(pytz.utc)
     return dt
+
+
+def clean_subject(subject: str) -> str:
+    round_one = re.sub(round_one_re, "", subject)
+    round_two = re.sub(round_two_re, "", round_one)
+
+    return round_two.strip()
