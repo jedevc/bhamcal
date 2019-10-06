@@ -5,7 +5,7 @@ that is completely incompatible with any reasonable system. This is a simple
 command line tool to extract the data from my.bham and generate something
 compatible with a reasonable system.
 
-This project is inspired (and takes a bit of code from) [Tom Moses](https://github.com/tomhmoses)'s
+This project is inspired (and takes a bit of code from) [Tom Moses](https://github.com/tomhmoses)'
 work on [OnlineBhamTimetableConverter][timetable-converter]. It's a great
 project, however, I'm generally unhappy about having to give my password off
 to third-party services, and I just need a simple command line tool.
