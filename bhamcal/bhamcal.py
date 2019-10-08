@@ -9,7 +9,7 @@ from .output.icalendar import iCalendar
 
 @click.command("bhamcal")
 @click.argument('username')
-@click.option('-o', '--output', default='-', type=click.File('w'),
+@click.option('-o', '--output', required=True,
               help="File to output the results to.")
 @click.option('-f', '--format', 'form', default='ical',
               type=click.Choice(['csv', 'ical']),
@@ -42,15 +42,14 @@ def main(username, password, form, headless, output, week):
     log(f'extracted {len(events)} events', Message.INFO)
 
     if form == 'csv':
-        calendar = CSV(events)
+        calendar = CSV(output, events)
     elif form == 'ical':
-        calendar = iCalendar(events)
+        calendar = iCalendar(output, events)
     else:
         raise ValueError("invalid output format")
     log(f'converted calendar to {form}', Message.INFO)
 
-    output.write(calendar)
-    log(f'written calendar to {output.name}', Message.SUCCESS)
+    log(f'written calendar to {output}', Message.SUCCESS)
     log()
 
 class Message:
