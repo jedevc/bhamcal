@@ -76,11 +76,14 @@ CODE_STRIPPER  = re.compile(
 )
 # Remove duplicates in the case of the name being present twice on some extended modules.
 REMOVE_DOUBLES = re.compile(
-    r".*/(?P<one>^.*)"
+    r"(?P<one>^.*/)"
 )
 
 def clean_subject(subject: str) -> str:
     subject = re.sub(CODE_STRIPPER, "", subject)
-    subject = re.sub(REMOVE_DOUBLES, "", subject)
+    items = subject.split("/")
+    if len(items) == 2:
+        if items[0].lower().strip() == items[1].lower().strip():
+            subject = re.sub(REMOVE_DOUBLES, "", subject)
 
     return subject.strip()
