@@ -10,3 +10,7 @@ class CalendarEvent:
     event_type: str
     location: str
     description: str
+
+    @property
+    def uid(self):
+        return self.subject_code + '/' + self.event_type[:3].upper()

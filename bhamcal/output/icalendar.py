@@ -12,12 +12,11 @@ def iCalendar(filename, events):
         output.write('\r\n'.join(header) + '\r\n')
 
         for event in events:
-            uid_prefix = event.subject_code + '/' + event.event_type[:3].upper()
-            codes[uid_prefix] += 1
+            codes[event.uid] += 1
 
             vevent = [
                 "BEGIN:VEVENT",
-                "UID:" + uid_prefix + str(codes[uid_prefix]),
+                "UID:" + event.uid + str(codes[event.uid]),
                 "SUMMARY:" + event.subject,
                 "DTSTAMP:" + format_date(event.start),
                 "DTSTART:" + format_date(event.start),
