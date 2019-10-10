@@ -62,8 +62,7 @@ If you add new dependencies, make sure that they are reflected in both
 
 ## License
 
-Like [OnlineBhamTimetableConverter][timetable-converter], this project is
-licensed under the GPLv3. Enjoy! :tada:
+This project is licensed under the GPLv3. Enjoy! :tada:
 
 [timetable-converter]: https://github.com/tomhmoses/OnlineBhamTimetableConverter
 [selenium-install]: https://selenium-python.readthedocs.io/installation.html
