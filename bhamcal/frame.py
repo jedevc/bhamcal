@@ -7,16 +7,10 @@ from selenium.common.exceptions import NoSuchElementException
 
 TIMETABLE = "https://onlinetimetables.bham.ac.uk/Timetable/current_academic_year_2/default.aspx"
 
-class WeekSelection(enum.Enum):
-    CURRENT = 'This Week'
-    NEXT = 'Next Week'
-    ALL = '*All Term Time'
-
 class Frame:
-    def __init__(self, username, password, week=WeekSelection.ALL):
+    def __init__(self, username, password):
         self.username = username
         self.password = password
-        self.week = week.value
 
     def CHROME(self, headless=True):
         options = webdriver.ChromeOptions()
@@ -52,7 +46,7 @@ class Frame:
         # select options from drop downs
         select = Select(driver.find_element_by_id("lbWeeks"))
         select.deselect_all()
-        select.select_by_visible_text(self.week)
+        select.select_by_visible_text('*All Term Time')
 
         select = Select(driver.find_element_by_id("lbDays"))
         select.deselect_all()
