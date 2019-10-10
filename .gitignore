@@ -14,3 +14,7 @@ venv/
 *.ical
 *.csv
 *.ics
+
+# credentials
+credentials.json
+token.pickle

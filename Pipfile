@@ -7,6 +7,14 @@ verify_ssl = true
 
 [packages]
 bhamcal = {editable = true,path = "."}
+selenium = "*"
+click = "*"
+beautifulsoup4 = "*"
+colorama = "*"
+pytz = "*"
+google-api-python-client = "*"
+google-auth-httplib2 = "*"
+google-auth-oauthlib = "*"
 
 [requires]
 python_version = "3.7"

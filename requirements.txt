@@ -3,3 +3,6 @@ click
 beautifulsoup4
 colorama
 pytz
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib

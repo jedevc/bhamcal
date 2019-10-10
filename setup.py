@@ -23,7 +23,10 @@ setuptools.setup(
         'click',
         'beautifulsoup4',
         'colorama',
-        'pytz'
+        'pytz',
+        'google-api-python-client',
+        'google-auth-httplib2',
+        'google-auth-oauthlib'
     ],
 
     entry_points={
