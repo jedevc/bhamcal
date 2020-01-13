@@ -98,9 +98,11 @@ Calendar web view.
 
 ## Development
 
-To develop, first set up the pipenv:
+To develop, first set up a virtual environment and install the dependencies:
 
-    $ pipenv shell
+    $ virtualenv .venv
+    $ source .venv/bin/activate
+    $ pip install -r requirements.txt
 
 Then, you can run the tool using:
 
