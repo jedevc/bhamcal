@@ -13,17 +13,26 @@ from .output.gcal import googleCalendar
 @click.option('-o', '--output', required=True,
               help="File to output the results to.")
 @click.option('-f', '--format', 'form', default='ical',
-              type=click.Choice(['csv', 'ical', 'gcal']),
+              type=click.Choice(['ical', 'csv', 'gcal']),
               help="Output format of calendar.")
+@click.option('-b', '--browser', default='chrome',
+              type=click.Choice(['chrome', 'firefox']),
+              help="Browser driver to use.")
 @click.option('--headless/--head', 'headless', default=True,
               help="Change whether the browser is run headlessly.")
 @click.password_option(confirmation_prompt=False,
               help="Override password to my.bham account.")
-def main(username, password, form, headless, output):
+def main(username, password, form, browser, headless, output):
     fr = frame.Frame(username, password)
     log('downloading timetable...', Message.INFO, overwrite=True)
     try:
-        browser = fr.CHROME(headless)
+        if browser == 'chrome':
+            browser = fr.CHROME(headless)
+        elif browser == 'firefox':
+            browser = fr.FIREFOX(headless)
+        else:
+            raise NotImplementedError('unsupported browser driver')
+
         source = fr.fetch(browser)
     except frame.FrameFetchError:
         log('failed to download timetable', Message.ERROR)
