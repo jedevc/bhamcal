@@ -1,3 +1,5 @@
+import time
+
 from collections import Counter
 
 def iCalendar(filename, events):
@@ -18,6 +20,10 @@ def iCalendar(filename, events):
                 "BEGIN:VEVENT",
                 "UID:" + event.uid + str(codes[event.uid]),
                 "SUMMARY:" + event.subject,
+                # NOTE: SEQUENCE "guarantees" that each calendar contains the
+                #       most recent events, even though you probably shouldn't use
+                #       timestamps for it ;)
+                "SEQUENCE:" + str(int(time.time())),
                 "DTSTAMP:" + format_date(event.start),
                 "DTSTART:" + format_date(event.start),
                 "DTEND:" + format_date(event.end),

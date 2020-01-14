@@ -49,6 +49,9 @@ def googleCalendar(calendar, events):
             'end': {
                 'dateTime': event.end.isoformat()
             },
+            # NOTE: sequence "guarantees" that each calendar contains the
+            #       most recent events, just like for the iCalendar export
+            'sequence': int(time.time()),
             'iCalUID': event.uid + str(codes[event.uid])
         }
 
