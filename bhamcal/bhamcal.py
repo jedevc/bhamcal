@@ -46,11 +46,11 @@ def main(username, password, form, browser, headless, output):
 
     log(f'converting calendar to {form}...', Message.INFO, overwrite=True)
     if form == 'csv':
-        calendar = CSV(output, events)
+        CSV(output, events)
     elif form == 'ical':
-        calendar = iCalendar(output, events)
+        iCalendar(output, events)
     elif form == 'gcal':
-        calendar = googleCalendar(output, events)
+        googleCalendar(output, events)
     else:
         raise ValueError("invalid output format")
     log(f'converted calendar to {form}', Message.INFO)
