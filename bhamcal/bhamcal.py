@@ -20,9 +20,11 @@ from .output.gcal import googleCalendar
               help="Download driver to use.")
 @click.option('--headless/--head', 'headless', default=True,
               help="Change whether the browser is run headlessly.")
+@click.option('--colors/--no-colors', default=False,
+              help="Enable module-wise color outputs (only gcal)")
 @click.password_option(confirmation_prompt=False,
               help="Override password to my.bham account.")
-def main(username, password, form, downloader, headless, output):
+def main(username, password, form, downloader, headless, output, colors):
     try:
         if downloader == 'chrome':
             fr = frame.WebFrame(frame.CHROME(headless))
@@ -49,7 +51,7 @@ def main(username, password, form, downloader, headless, output):
     elif form == 'ical':
         iCalendar(output, events)
     elif form == 'gcal':
-        googleCalendar(output, events)
+        googleCalendar(output, events, use_colors=colors)
     else:
         raise ValueError("invalid output format")
     log(f'converted calendar to {form}', Message.INFO)

@@ -12,7 +12,7 @@ from google.auth.transport.requests import Request
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 TIME_DELTA = 0.2
 
-def googleCalendar(calendar, events):
+def googleCalendar(calendar, events, use_colors=False):
     # try to access credentials
     creds = None
     try:
@@ -35,6 +35,10 @@ def googleCalendar(calendar, events):
     service = build('calendar', 'v3', credentials=creds)
 
     codes = Counter()
+    
+    if use_colors:
+        available_colors = list(service.colors().get().execute()['event'].keys())
+        selector = ColorSelector(available_colors)
 
     for event in events:
         codes[event.uid] += 1
@@ -54,9 +58,35 @@ def googleCalendar(calendar, events):
             'sequence': int(time.time()),
             'iCalUID': event.uid + str(codes[event.uid])
         }
+        if use_colors:
+            body['colorId'] = selector[event.subject_code]
 
         service.events().import_(calendarId=calendar, body=body).execute()
 
         # avoid getting rate-limited
         # TODO: only run this when you actually get rate-limited
         time.sleep(TIME_DELTA)
+
+class ColorSelector:
+    def __init__(self, colors):
+        half = len(colors) // 2
+        self.original = []
+        for i in range(half):
+            self.original.extend(colors[i::half])
+
+        self.colors = self.original
+
+        self.cache = {}
+
+    def __getitem__(self, index):
+        if index in self.cache:
+            return self.cache[index]
+        else:
+            try:
+                color = self.colors.pop(0)
+            except IndexError:
+                self.colors = self.original
+                color = self.colors.pop(0)
+
+            self.cache[index] = color
+            return color
