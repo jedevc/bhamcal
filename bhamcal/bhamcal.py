@@ -15,25 +15,24 @@ from .output.gcal import googleCalendar
 @click.option('-f', '--format', 'form', default='ical',
               type=click.Choice(['ical', 'csv', 'gcal']),
               help="Output format of calendar.")
-@click.option('-b', '--browser', default='chrome',
+@click.option('-d', '--downloader', default='chrome',
               type=click.Choice(['chrome', 'firefox']),
-              help="Browser driver to use.")
+              help="Download driver to use.")
 @click.option('--headless/--head', 'headless', default=True,
               help="Change whether the browser is run headlessly.")
 @click.password_option(confirmation_prompt=False,
               help="Override password to my.bham account.")
-def main(username, password, form, browser, headless, output):
-    fr = frame.Frame(username, password)
-    log('downloading timetable...', Message.INFO, overwrite=True)
+def main(username, password, form, downloader, headless, output):
     try:
-        if browser == 'chrome':
-            browser = fr.CHROME(headless)
-        elif browser == 'firefox':
-            browser = fr.FIREFOX(headless)
+        if downloader == 'chrome':
+            fr = frame.WebFrame(frame.CHROME(headless))
+        elif downloader == 'firefox':
+            fr = frame.WebFrame(frame.FIREFOX(headless))
         else:
             raise NotImplementedError('unsupported browser driver')
 
-        source = fr.fetch(browser)
+        log('downloading timetable...', Message.INFO, overwrite=True)
+        source = fr.fetch(username, password)
     except frame.FrameFetchError:
         log('failed to download timetable', Message.ERROR)
         log()
