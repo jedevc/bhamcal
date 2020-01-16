@@ -1,11 +1,72 @@
 import enum
 
+from pprint import pprint
+
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
 TIMETABLE = "https://onlinetimetables.bham.ac.uk/Timetable/current_academic_year_2/default.aspx"
+
+class NativeFrame:
+    HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0'
+    }
+
+    def fetch(self, username, password):
+        # get initial state
+        session = requests.session()
+        resp = session.get(TIMETABLE, headers=NativeFrame.HEADERS)
+
+        # login
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        form = soup.find('form')
+        filled = self._extract_form(form)
+        filled['tUserName'] = username
+        filled['tPassword'] = password
+
+        resp = session.post(urljoin(resp.url, form['action']), data=filled, headers=NativeFrame.HEADERS)
+        if 'Incorrect username or password' in resp.text:
+            raise FrameFetchError()
+
+        # navigate to web timetables
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        form = soup.find('form')
+        filled = self._extract_form(form)
+        filled['__EVENTTARGET'] = 'LinkBtn_mystudentset'
+
+        resp = session.post(urljoin(resp.url, form['action']), data=filled, headers=NativeFrame.HEADERS)
+        with open('dump.1.html', 'w') as dump:
+            dump.write(resp.text)
+
+        # generate timetable
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        form = soup.find('form')
+        filled = self._extract_form(form)
+        filled['lbWeeks'] = '6;7;8;9;10;11;12;13;14;15;16;21;22;23;24;25;26;27;28;29;30;31;36;37;38;39;40;41;42;43'
+        filled['lbDays'] = '1-7'
+        filled['dlPeriod'] = '3-22'
+        filled['dlType'] = 'TextSpreadsheet;swsurl;SWSCUST+Object+TextSpreadsheet'
+
+        pprint(filled)
+
+        resp = session.post(urljoin(resp.url, form['action']), data=filled, headers=NativeFrame.HEADERS)
+        with open('dump.2.html', 'w') as dump:
+            dump.write(resp.text)
+
+    def _extract_form(self, form):
+        extract = {}
+        for tag in form.find_all('input'):
+            name = tag.get('name')
+            value = tag.get('value')
+            if name:
+                extract[name] = value
+        return extract
 
 class WebFrame:
     def __init__(self, driver):

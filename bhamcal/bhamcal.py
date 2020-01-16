@@ -16,7 +16,7 @@ from .output.gcal import googleCalendar
               type=click.Choice(['ical', 'csv', 'gcal']),
               help="Output format of calendar.")
 @click.option('-d', '--downloader', default='chrome',
-              type=click.Choice(['chrome', 'firefox']),
+              type=click.Choice(['chrome', 'firefox', "native"]),
               help="Download driver to use.")
 @click.option('--headless/--head', 'headless', default=True,
               help="Change whether the browser is run headlessly.")
@@ -30,6 +30,8 @@ def main(username, password, form, downloader, headless, output, colors):
             fr = frame.WebFrame(frame.CHROME(headless))
         elif downloader == 'firefox':
             fr = frame.WebFrame(frame.FIREFOX(headless))
+        elif downloader == 'native':
+            fr = frame.NativeFrame()
         else:
             raise NotImplementedError('unsupported browser driver')
 
