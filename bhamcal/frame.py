@@ -89,7 +89,8 @@ class NativeFrame:
                         "lbWeeks": "t",
                         "lbDays": "1-5",
                         "dlPeriod": "3-22",
-                        "dlType": "individual;swsurl;1SWSCUST Object Individual MDS",
+                        # "dlType": "individual;swsurl;1SWSCUST Object Individual MDS",
+                        "dlType": "TextSpreadsheet;swsurl;SWSCUST Object TextSpreadsheet MDS",
                         "bGetTimetable": "View Timetable"
                     }
         resp = session.post(TIMETABLE, headers=headers, data=formdata)
@@ -105,7 +106,7 @@ class NativeFrame:
         for name in soup.find_all('span', attrs={'class': 'header-0-0-0'}):
             print(name.text)
         print('-------')
-        return resp.content
+        return resp.text
 
     def _extract_form(self, form):
         extract = {}
