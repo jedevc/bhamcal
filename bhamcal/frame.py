@@ -34,30 +34,78 @@ class NativeFrame:
         if 'Incorrect username or password' in resp.text:
             raise FrameFetchError()
 
-        # navigate to web timetables
+        # navigate to web timetables form
         soup = BeautifulSoup(resp.text, 'html.parser')
-        form = soup.find('form')
-        filled = self._extract_form(form)
-        filled['__EVENTTARGET'] = 'LinkBtn_mystudentset'
-
-        resp = session.post(urljoin(resp.url, form['action']), data=filled, headers=NativeFrame.HEADERS)
-        with open('dump.1.html', 'w') as dump:
+        formdata = {
+           '__VIEWSTATE': soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
+           '__EVENTVALIDATION': soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
+           '__EVENTTARGET': 'LinkBtn_modulesstudentset'
+        }
+        resp = session.post(TIMETABLE, data=formdata, headers=NativeFrame.HEADERS)
+        with open('modules.html', 'w') as dump:
             dump.write(resp.text)
 
-        # generate timetable
+
+
+
+
+
+        # # Submit view timetable form
         soup = BeautifulSoup(resp.text, 'html.parser')
         form = soup.find('form')
-        filled = self._extract_form(form)
-        filled['lbWeeks'] = '6;7;8;9;10;11;12;13;14;15;16;21;22;23;24;25;26;27;28;29;30;31;36;37;38;39;40;41;42;43'
-        filled['lbDays'] = '1-7'
-        filled['dlPeriod'] = '3-22'
-        filled['dlType'] = 'TextSpreadsheet;swsurl;SWSCUST+Object+TextSpreadsheet'
+        select_modules = soup.find('select', attrs={'name': 'dlObject'})
+        options = []
+        for option in select_modules.findChildren():
+            options.append(option['value'])
+        print(options)
+        # formdata = {
+        #    '__EVENTTARGET': '',
+        #    '__EVENTARGUMENT': '',
+        #    '__LASTFOCUS': '',
+        #    '__VIEWSTATE': soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
+        #    '__VIEWSTATEGENERATOR': soup.find('input', attrs={'name': '__VIEWSTATEGENERATOR'})['value'],
+        #    '__EVENTVALIDATION': soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
+        #    "tLinkType": "modulesstudentset",
+        #    "dlObject": "29289",
+        #    "lbWeeks": "t",
+        #    "lbDays": "1-5",
+        #    "dlPeriod": "3-22",
+        # #    "dlType": "individual;swsurl;1SWSCUST Object Individual",
+        #    "dlType": "individual;swsurl;SWSCUST Object Individual MDS",
+        #    "bGetTimetable": "View Timetable"
+        # }
 
-        pprint(filled)
+        headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0) Gecko/20100101 Firefox/72.0", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8", "Accept-Language": "en-GB,en;q=0.5", "Accept-Encoding": "gzip, deflate", "Content-Type": "application/x-www-form-urlencoded", "Origin": "https://onlinetimetables.bham.ac.uk", "DNT": "1", "Connection": "close", "Referer": "https://onlinetimetables.bham.ac.uk/timetable/current_academic_year_2/default.aspx", "Upgrade-Insecure-Requests": "1"}
+        formdata = {
+                        "__EVENTTARGET": '',
+                        "__EVENTARGUMENT": '',
+                        "__LASTFOCUS": '',
+                        "__VIEWSTATE": soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
+                        "__VIEWSTATEGENERATOR": soup.find('input', attrs={'name': '__VIEWSTATEGENERATOR'})['value'],
+                        # "__EVENTVALIDATION": "/wEWXwL2ire1CwLGjZyxBAKh2NLqCAKA+NWlAwKB1N7ACAL4jJt9Ao+T5AYC38Ga7A0CkoaswgYC1q6+0gYC6pbeegL0lt56ApKGjJYEAsGPxY4EAs+PxY4EAt2PxY4EAumX7goC94bKtgMCgI+9jQQC6ICgmgcCk5fk1wMC7P2LxAMCjY+JjQQCjY+NjQQCjY+xjQQCjY+1jQQCjY+5jQQCjY+9jQQCjY+hjQQCjY/ljgQCjY/pjgQCl87m2gMCuPfIrw0C3eCqhAcC5omNmQECi7Pv7wwCrNzxxAYCscXTWQLa7rWuCgLPhPXwAgLQrdfFDAKXzuraAwK498yvDQLd4K6EBwLmibGZAQKLs5PuDAKs3PXEBgKxxddZAtruua4KAs+E+fACAtCt28UMApfO7toDArj38K8NAt3g0oQHAuaJtZkBAouzl+4MAqzc+cQGArHF21kC2u69rgoCz4T98AIC0K3fxQwCl86S2QMCuPf0rw0C3eDWhAcC5om5mQECi7Ob7gwCrNz9xAYCscXfWQLa7qGuCgLPhOHwAgLQrcPFDAKXzpbZAwK49/ivDQLd4NqEBwLX2ZOaDgKB69f3AgKG69f3AgLoitfXDALpitfXDALqitfXDALritfXDALsitfXDALtitfXDALuitfXDALV0Lm1AQKI0JTOAwKRx46pCwKy0JTOAwLQu87MDAKK0My/CwLwoL2vAwKb9sRaAtvhxdUNAujWjewBAv3x+rAHyaxjgLxGzH0I3U23aQnIly6xGWA=",
+                        "__EVENTVALIDATION": soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
+                        "tLinkType": "modulesstudentset",
+                        "dlObject": options,
+                        "lbWeeks": "t",
+                        "lbDays": "1-5",
+                        "dlPeriod": "3-22",
+                        "dlType": "individual;swsurl;1SWSCUST Object Individual MDS",
+                        "bGetTimetable": "View Timetable"
+                    }
+        resp = session.post(TIMETABLE, headers=headers, data=formdata)
+        # print(resp.history[0].request.path_url)
 
-        resp = session.post(urljoin(resp.url, form['action']), data=filled, headers=NativeFrame.HEADERS)
-        with open('dump.2.html', 'w') as dump:
+
+        # resp = session.post(TIMETABLE, data=formdata)
+
+        with open('timetable.html', 'w') as dump:
             dump.write(resp.text)
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        print('-------')
+        for name in soup.find_all('span', attrs={'class': 'header-0-0-0'}):
+            print(name.text)
+        print('-------')
+        return resp.content
 
     def _extract_form(self, form):
         extract = {}
@@ -129,3 +177,7 @@ def FIREFOX(headless=True):
         options.add_argument('--headless')
     driver = webdriver.Firefox(options=options)
     return driver
+
+if __name__ == "__main__":
+    frame = NativeFrame()
+    frame.fetch("cxd738","LEFTIES#dacquoise#RACIALIZED")
