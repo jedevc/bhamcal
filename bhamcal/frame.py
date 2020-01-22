@@ -14,9 +14,6 @@ from selenium.common.exceptions import NoSuchElementException
 TIMETABLE = "https://onlinetimetables.bham.ac.uk/Timetable/current_academic_year_2/default.aspx"
 
 class NativeFrame:
-    # HEADERS = {
-    #     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0'
-    # }
 
     def fetch(self, username, password):
         # get initial state
