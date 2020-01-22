@@ -14,14 +14,14 @@ from selenium.common.exceptions import NoSuchElementException
 TIMETABLE = "https://onlinetimetables.bham.ac.uk/Timetable/current_academic_year_2/default.aspx"
 
 class NativeFrame:
-    HEADERS = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0'
-    }
+    # HEADERS = {
+    #     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0'
+    # }
 
     def fetch(self, username, password):
         # get initial state
         session = requests.session()
-        resp = session.get(TIMETABLE, headers=NativeFrame.HEADERS)
+        resp = session.get(TIMETABLE)
 
         # login
         soup = BeautifulSoup(resp.text, 'html.parser')
@@ -30,7 +30,7 @@ class NativeFrame:
         filled['tUserName'] = username
         filled['tPassword'] = password
 
-        resp = session.post(urljoin(resp.url, form['action']), data=filled, headers=NativeFrame.HEADERS)
+        resp = session.post(urljoin(resp.url, form['action']), data=filled)
         if 'Incorrect username or password' in resp.text:
             raise FrameFetchError()
 
@@ -41,7 +41,7 @@ class NativeFrame:
            '__EVENTVALIDATION': soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
            '__EVENTTARGET': 'LinkBtn_modulesstudentset'
         }
-        resp = session.post(TIMETABLE, data=formdata, headers=NativeFrame.HEADERS)
+        resp = session.post(TIMETABLE, data=formdata)
         with open('modules.html', 'w') as dump:
             dump.write(resp.text)
 
@@ -58,17 +58,17 @@ class NativeFrame:
         select_modules = soup.find('select', attrs={'name': 'dlObject'})
         modules = [x['value'] for x in select_modules.findChildren()]
 
-        headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0) Gecko/20100101 Firefox/72.0", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8", "Accept-Language": "en-GB,en;q=0.5", "Accept-Encoding": "gzip, deflate", "Content-Type": "application/x-www-form-urlencoded", "Origin": "https://onlinetimetables.bham.ac.uk", "DNT": "1", "Connection": "close", "Referer": "https://onlinetimetables.bham.ac.uk/timetable/current_academic_year_2/default.aspx", "Upgrade-Insecure-Requests": "1"}
         formdata = {
                         # Used to call a postback
                         "__EVENTTARGET": '',
                         "__EVENTARGUMENT": '',
 
-                        "__LASTFOCUS": '',
                         # Used by ASP.NET to store state
+                        "__LASTFOCUS": '',
                         "__VIEWSTATE": soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
                         "__VIEWSTATEGENERATOR": soup.find('input', attrs={'name': '__VIEWSTATEGENERATOR'})['value'],
                         "__EVENTVALIDATION": soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
+
                         # Not sure... just seemed to be there
                         "tLinkType": "modulesstudentset",
                         # Select modules
@@ -81,10 +81,10 @@ class NativeFrame:
                         "dlPeriod": soup.find('option', string='All Day (08:00 - 22:00)')['value'],
                         # Formate to output the timetable in
                         "dlType": soup.find('option', string='List Timetable (with calendar dates)')['value'],
-                        # "dlType": "TextSpreadsheet;swsurl;SWSCUST Object TextSpreadsheet MDS",
+                        # Select button to submit form
                         "bGetTimetable": "View Timetable"
                     }
-        resp = session.post(TIMETABLE, headers=headers, data=formdata)
+        resp = session.post(TIMETABLE, data=formdata)
 
         return resp.text
 
@@ -158,7 +158,3 @@ def FIREFOX(headless=True):
         options.add_argument('--headless')
     driver = webdriver.Firefox(options=options)
     return driver
-
-if __name__ == "__main__":
-    frame = NativeFrame()
-    frame.fetch("cxd738","LEFTIES#dacquoise#RACIALIZED")
