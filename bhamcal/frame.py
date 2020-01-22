@@ -36,7 +36,8 @@ class NativeFrame:
         formdata = {
            '__VIEWSTATE': soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
            '__EVENTVALIDATION': soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
-           '__EVENTTARGET': 'LinkBtn_modulesstudentset'
+        #    '__EVENTTARGET': 'LinkBtn_modulesstudentset'
+           '__EVENTTARGET': 'LinkBtn_mystudentset'
         }
         resp = session.post(TIMETABLE, data=formdata)
         with open('modules.html', 'w') as dump:
@@ -53,7 +54,7 @@ class NativeFrame:
 
         # Find all available module codes
         select_modules = soup.find('select', attrs={'name': 'dlObject'})
-        modules = [x['value'] for x in select_modules.findChildren()]
+        # modules = [x['value'] for x in select_modules.findChildren()]
 
         formdata = {
                         # Used to call a postback
@@ -70,7 +71,7 @@ class NativeFrame:
                         # "tLinkType": "modulesstudentset",
 
                         # Select modules
-                        "dlObject": modules,
+                        # "dlObject": modules,
                         # Select weeks
                         "lbWeeks": soup.find('option', string='*All Term Time')['value'],
                         # Select days of the week
