@@ -66,8 +66,9 @@ class NativeFrame:
                         "__VIEWSTATEGENERATOR": soup.find('input', attrs={'name': '__VIEWSTATEGENERATOR'})['value'],
                         "__EVENTVALIDATION": soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
 
-                        # Not sure... just seemed to be there
-                        "tLinkType": "modulesstudentset",
+                        # # Not sure... just seemed to be there
+                        # "tLinkType": "modulesstudentset",
+
                         # Select modules
                         "dlObject": modules,
                         # Select weeks
