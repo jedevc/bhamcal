@@ -33,13 +33,12 @@ def googleCalendar(calendar, events, use_colors=False):
             pickle.dump(creds, token)
 
     service = build('calendar', 'v3', credentials=creds)
-
+    batch = service.new_batch_http_request()
     codes = Counter()
     
     if use_colors:
         available_colors = list(service.colors().get().execute()['event'].keys())
         selector = ColorSelector(available_colors)
-
     for event in events:
         codes[event.uid] += 1
 
@@ -60,12 +59,8 @@ def googleCalendar(calendar, events, use_colors=False):
         }
         if use_colors:
             body['colorId'] = selector[event.subject_code]
-
-        service.events().import_(calendarId=calendar, body=body).execute()
-
-        # avoid getting rate-limited
-        # TODO: only run this when you actually get rate-limited
-        time.sleep(TIME_DELTA)
+        batch.add(service.events().import_(calendarId=calendar, body=body))
+    batch.execute()
 
 class ColorSelector:
     def __init__(self, colors):
