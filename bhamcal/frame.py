@@ -53,59 +53,39 @@ class NativeFrame:
         # # Submit view timetable form
         soup = BeautifulSoup(resp.text, 'html.parser')
         form = soup.find('form')
+
+        # Find all available module codes
         select_modules = soup.find('select', attrs={'name': 'dlObject'})
-        options = []
-        for option in select_modules.findChildren():
-            options.append(option['value'])
-        print(options)
-        # formdata = {
-        #    '__EVENTTARGET': '',
-        #    '__EVENTARGUMENT': '',
-        #    '__LASTFOCUS': '',
-        #    '__VIEWSTATE': soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
-        #    '__VIEWSTATEGENERATOR': soup.find('input', attrs={'name': '__VIEWSTATEGENERATOR'})['value'],
-        #    '__EVENTVALIDATION': soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
-        #    "tLinkType": "modulesstudentset",
-        #    "dlObject": "29289",
-        #    "lbWeeks": "t",
-        #    "lbDays": "1-5",
-        #    "dlPeriod": "3-22",
-        # #    "dlType": "individual;swsurl;1SWSCUST Object Individual",
-        #    "dlType": "individual;swsurl;SWSCUST Object Individual MDS",
-        #    "bGetTimetable": "View Timetable"
-        # }
+        modules = [x['value'] for x in select_modules.findChildren()]
 
         headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0) Gecko/20100101 Firefox/72.0", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8", "Accept-Language": "en-GB,en;q=0.5", "Accept-Encoding": "gzip, deflate", "Content-Type": "application/x-www-form-urlencoded", "Origin": "https://onlinetimetables.bham.ac.uk", "DNT": "1", "Connection": "close", "Referer": "https://onlinetimetables.bham.ac.uk/timetable/current_academic_year_2/default.aspx", "Upgrade-Insecure-Requests": "1"}
         formdata = {
+                        # Used to call a postback
                         "__EVENTTARGET": '',
                         "__EVENTARGUMENT": '',
+
                         "__LASTFOCUS": '',
+                        # Used by ASP.NET to store state
                         "__VIEWSTATE": soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
                         "__VIEWSTATEGENERATOR": soup.find('input', attrs={'name': '__VIEWSTATEGENERATOR'})['value'],
-                        # "__EVENTVALIDATION": "/wEWXwL2ire1CwLGjZyxBAKh2NLqCAKA+NWlAwKB1N7ACAL4jJt9Ao+T5AYC38Ga7A0CkoaswgYC1q6+0gYC6pbeegL0lt56ApKGjJYEAsGPxY4EAs+PxY4EAt2PxY4EAumX7goC94bKtgMCgI+9jQQC6ICgmgcCk5fk1wMC7P2LxAMCjY+JjQQCjY+NjQQCjY+xjQQCjY+1jQQCjY+5jQQCjY+9jQQCjY+hjQQCjY/ljgQCjY/pjgQCl87m2gMCuPfIrw0C3eCqhAcC5omNmQECi7Pv7wwCrNzxxAYCscXTWQLa7rWuCgLPhPXwAgLQrdfFDAKXzuraAwK498yvDQLd4K6EBwLmibGZAQKLs5PuDAKs3PXEBgKxxddZAtruua4KAs+E+fACAtCt28UMApfO7toDArj38K8NAt3g0oQHAuaJtZkBAouzl+4MAqzc+cQGArHF21kC2u69rgoCz4T98AIC0K3fxQwCl86S2QMCuPf0rw0C3eDWhAcC5om5mQECi7Ob7gwCrNz9xAYCscXfWQLa7qGuCgLPhOHwAgLQrcPFDAKXzpbZAwK49/ivDQLd4NqEBwLX2ZOaDgKB69f3AgKG69f3AgLoitfXDALpitfXDALqitfXDALritfXDALsitfXDALtitfXDALuitfXDALV0Lm1AQKI0JTOAwKRx46pCwKy0JTOAwLQu87MDAKK0My/CwLwoL2vAwKb9sRaAtvhxdUNAujWjewBAv3x+rAHyaxjgLxGzH0I3U23aQnIly6xGWA=",
                         "__EVENTVALIDATION": soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
+                        # Not sure... just seemed to be there
                         "tLinkType": "modulesstudentset",
-                        "dlObject": options,
-                        "lbWeeks": "t",
-                        "lbDays": "1-5",
-                        "dlPeriod": "3-22",
-                        # "dlType": "individual;swsurl;1SWSCUST Object Individual MDS",
-                        "dlType": "TextSpreadsheet;swsurl;SWSCUST Object TextSpreadsheet MDS",
+                        # Select modules
+                        "dlObject": modules,
+                        # Select weeks
+                        "lbWeeks": soup.find('option', string='*All Term Time')['value'],
+                        # Select days of the week
+                        "lbDays": soup.find('option', string='All Week')['value'],
+                        # Select hours of the day to view
+                        "dlPeriod": soup.find('option', string='All Day (08:00 - 22:00)')['value'],
+                        # Formate to output the timetable in
+                        "dlType": soup.find('option', string='List Timetable (with calendar dates)')['value'],
+                        # "dlType": "TextSpreadsheet;swsurl;SWSCUST Object TextSpreadsheet MDS",
                         "bGetTimetable": "View Timetable"
                     }
         resp = session.post(TIMETABLE, headers=headers, data=formdata)
-        # print(resp.history[0].request.path_url)
 
-
-        # resp = session.post(TIMETABLE, data=formdata)
-
-        with open('timetable.html', 'w') as dump:
-            dump.write(resp.text)
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        print('-------')
-        for name in soup.find_all('span', attrs={'class': 'header-0-0-0'}):
-            print(name.text)
-        print('-------')
         return resp.text
 
     def _extract_form(self, form):
