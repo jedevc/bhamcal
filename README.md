@@ -15,10 +15,6 @@ to third-party services, and I just need a simple command line tool.
 bhamcal requires at least python 3.7, as it uses some slightly more modern
 features.
 
-Additionally, chromedriver is required for selenium to scrape the calendar
-data. To install it, see [here][selenium-install] (for windows-specific
-instructions, see below).
-
 Finally, to actually install bhamcal, clone the repository, and install it
 using pip:
 
@@ -29,13 +25,8 @@ using pip:
 If you don't want to install it system-wide, you can run it as a module, after
 installing the dependencies:
 
-    $ pip install -r requirements.txt
+    $ pip3 install -r requirements.txt
     $ python3 -m bhamcal
-
-### Windows
-
-- Download `chromedriver.exe` from [here](https://sites.google.com/a/chromium.org/chromedriver/downloads).
-- Put it inside `C:\Windows`.
 
 ## Usage
 
@@ -95,6 +86,29 @@ To generate a Google Calendar:
 
 The Calendar ID can be found in the calendar-specific settings in the Google
 Calendar web view.
+
+### Legacy scraping method
+
+In previous versions, bhamcal used to utilize a fully-fledged browser to make
+requests, using selenium. However, this approach (while still included in
+bhamcal) is much slower, so has been replaced by default.
+
+If you want to use it, you'll need to install chromedriver to allow selenium to
+scrape the calendar data. To install it, see [here][selenium-install], or for
+windows instructions, see below.
+
+Additionally, you'll need to install some additional dependencies using pip:
+
+    $ pip3 install -e ".[browser]"
+
+Then to invoke bhamcal using the chrome backend:
+
+    $ python3 -m bhamcal -o calendar.ics --downloader chrome
+
+#### Windows
+
+- Download `chromedriver.exe` from [here](https://sites.google.com/a/chromium.org/chromedriver/downloads).
+- Put it inside `C:\Windows`.
 
 ## Development
 
