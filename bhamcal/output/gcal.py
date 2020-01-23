@@ -4,6 +4,9 @@ import datetime
 
 from collections import Counter
 
+from ..utils import log
+from ..utils import Message
+
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -35,7 +38,7 @@ def googleCalendar(calendar, events, use_colors=False):
     service = build('calendar', 'v3', credentials=creds)
     batch = service.new_batch_http_request()
     codes = Counter()
-    
+    counter = 0
     if use_colors:
         available_colors = list(service.colors().get().execute()['event'].keys())
         selector = ColorSelector(available_colors)
@@ -60,6 +63,9 @@ def googleCalendar(calendar, events, use_colors=False):
         if use_colors:
             body['colorId'] = selector[event.subject_code]
         batch.add(service.events().import_(calendarId=calendar, body=body))
+        counter += 1
+        log(f'{counter}/{len(events)} events processed',Message.INFO, overwrite=(counter != len(events)))
+    log(f'uploading {len(events)} to gcal', Message.INFO)
     batch.execute()
 
 class ColorSelector:

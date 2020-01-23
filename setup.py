@@ -19,15 +19,18 @@ setuptools.setup(
 
     packages=setuptools.find_packages(),
     install_requires=[
-        'selenium',
         'click',
-        'beautifulsoup4',
         'colorama',
+        'beautifulsoup4',
         'pytz',
         'google-api-python-client',
         'google-auth-httplib2',
         'google-auth-oauthlib'
     ],
+
+    extras_require={
+        'browser': ['selenium']
+    },
 
     entry_points={
         'console_scripts': [

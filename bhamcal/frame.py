@@ -1,15 +1,6 @@
-import enum
-
-from pprint import pprint
-
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-
-from selenium import webdriver
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException
 
 TIMETABLE = "https://onlinetimetables.bham.ac.uk/Timetable/current_academic_year_2/default.aspx"
 
@@ -92,12 +83,18 @@ class WebFrame:
         self.driver = driver
 
     def fetch(self, username, password):
+        from selenium.common.exceptions import NoSuchElementException
+
         try:
             return self._download(username, password)
         except NoSuchElementException:
             raise FrameFetchError
 
     def _download(self, username, password):
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.chrome.options import Options
+
+        # load the start page
         self.driver.get(TIMETABLE)
 
         # log in
@@ -136,6 +133,8 @@ class FrameFetchError(RuntimeError):
     pass
 
 def CHROME(headless=True):
+    from selenium import webdriver
+
     options = webdriver.ChromeOptions()
     if headless:
         options.add_argument('--headless')
@@ -143,6 +142,8 @@ def CHROME(headless=True):
     return driver
 
 def FIREFOX(headless=True):
+    from selenium import webdriver
+
     options = webdriver.FirefoxOptions()
     if headless:
         options.add_argument('--headless')
