@@ -3,6 +3,8 @@ import sys
 
 from . import frame
 from .extractor import extract
+from .utils import log
+from .utils import Message
 
 from .output.csv import CSV
 from .output.icalendar import iCalendar
@@ -47,7 +49,7 @@ def main(username, password, form, downloader, headless, output, colors):
     events.sort(key=lambda x: x.start)
     log(f'extracted {len(events)} events', Message.INFO)
 
-    log(f'converting calendar to {form}...', Message.INFO, overwrite=True)
+    log(f'converting calendar to {form}...', Message.INFO)
     if form == 'csv':
         CSV(output, events)
     elif form == 'ical':
@@ -60,27 +62,3 @@ def main(username, password, form, downloader, headless, output, colors):
 
     log(f'written calendar to {output}', Message.SUCCESS)
     log()
-
-class Message:
-    SUCCESS = 'green'
-    INFO    = 'blue'
-    ERROR   = 'red'
-
-def log(message='', level=None, overwrite=False):
-    # don't prefix empty messages
-    if len(message.strip()) != 0:
-        message = '[*] ' + message
-
-    # work out overwriting
-    if overwrite:
-        click.echo(err=True)
-        log.overwrite_next = True
-    elif log.overwrite_next:
-        message = '\r' + message
-        log.overwrite_next = False
-    else:
-        click.echo(err=True)
-
-    click.secho(message, fg=level, nl=False, err=True)
-
-log.overwrite_next = False
