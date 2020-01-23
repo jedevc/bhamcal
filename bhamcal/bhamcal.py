@@ -15,8 +15,8 @@ from .output.gcal import googleCalendar
 @click.option('-f', '--format', 'form', default='ical',
               type=click.Choice(['ical', 'csv', 'gcal']),
               help="Output format of calendar.")
-@click.option('-d', '--downloader', default='chrome',
-              type=click.Choice(['chrome', 'firefox', "native"]),
+@click.option('-d', '--downloader', default='native',
+              type=click.Choice(['native', 'chrome', 'firefox']),
               help="Download driver to use.")
 @click.option('--headless/--head', 'headless', default=True,
               help="Change whether the browser is run headlessly.")
@@ -26,12 +26,12 @@ from .output.gcal import googleCalendar
               help="Override password to my.bham account.")
 def main(username, password, form, downloader, headless, output, colors):
     try:
-        if downloader == 'chrome':
+        if downloader == 'native':
+            fr = frame.NativeFrame()
+        elif downloader == 'chrome':
             fr = frame.WebFrame(frame.CHROME(headless))
         elif downloader == 'firefox':
             fr = frame.WebFrame(frame.FIREFOX(headless))
-        elif downloader == 'native':
-            fr = frame.NativeFrame()
         else:
             raise NotImplementedError('unsupported browser driver')
 
