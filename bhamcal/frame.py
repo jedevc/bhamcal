@@ -14,7 +14,6 @@ from selenium.common.exceptions import NoSuchElementException
 TIMETABLE = "https://onlinetimetables.bham.ac.uk/Timetable/current_academic_year_2/default.aspx"
 
 class NativeFrame:
-
     def fetch(self, username, password):
         # get initial state
         session = requests.session()
@@ -36,53 +35,45 @@ class NativeFrame:
         formdata = {
            '__VIEWSTATE': soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
            '__EVENTVALIDATION': soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
-        #    '__EVENTTARGET': 'LinkBtn_modulesstudentset'
            '__EVENTTARGET': 'LinkBtn_mystudentset'
+           # '__EVENTTARGET': 'LinkBtn_modulesstudentset'  # download all modules
         }
         resp = session.post(TIMETABLE, data=formdata)
-        with open('modules.html', 'w') as dump:
-            dump.write(resp.text)
 
-
-
-
-
-
-        # # Submit view timetable form
         soup = BeautifulSoup(resp.text, 'html.parser')
         form = soup.find('form')
 
-        # Find all available module codes
-        select_modules = soup.find('select', attrs={'name': 'dlObject'})
+        # find all available module codes (only for downloading all modules)
+        # select_modules = soup.find('select', attrs={'name': 'dlObject'})
         # modules = [x['value'] for x in select_modules.findChildren()]
 
         formdata = {
-                        # Used to call a postback
-                        "__EVENTTARGET": '',
-                        "__EVENTARGUMENT": '',
+            # used to call a postback
+            "__EVENTTARGET": '',
+            "__EVENTARGUMENT": '',
 
-                        # Used by ASP.NET to store state
-                        "__LASTFOCUS": '',
-                        "__VIEWSTATE": soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
-                        "__VIEWSTATEGENERATOR": soup.find('input', attrs={'name': '__VIEWSTATEGENERATOR'})['value'],
-                        "__EVENTVALIDATION": soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
+            # used by ASP.NET to store state
+            "__LASTFOCUS": '',
+            "__VIEWSTATE": soup.find('input', attrs={'name': '__VIEWSTATE'})['value'],
+            "__VIEWSTATEGENERATOR": soup.find('input', attrs={'name': '__VIEWSTATEGENERATOR'})['value'],
+            "__EVENTVALIDATION": soup.find('input', attrs={'name': '__EVENTVALIDATION'})['value'],
 
-                        # # Not sure... just seemed to be there
-                        # "tLinkType": "modulesstudentset",
+            # not sure... just seemed to be there
+            # "tLinkType": "modulesstudentset",
 
-                        # Select modules
-                        # "dlObject": modules,
-                        # Select weeks
-                        "lbWeeks": soup.find('option', string='*All Term Time')['value'],
-                        # Select days of the week
-                        "lbDays": soup.find('option', string='All Week')['value'],
-                        # Select hours of the day to view
-                        "dlPeriod": soup.find('option', string='All Day (08:00 - 22:00)')['value'],
-                        # Formate to output the timetable in
-                        "dlType": soup.find('option', string='List Timetable (with calendar dates)')['value'],
-                        # Select button to submit form
-                        "bGetTimetable": "View Timetable"
-                    }
+            # select modules (only for downloading all modules)
+            # "dlObject": modules,
+            # select weeks
+            "lbWeeks": soup.find('option', string='*All Term Time')['value'],
+            # select days of the week
+            "lbDays": soup.find('option', string='All Week')['value'],
+            # select hours of the day to view
+            "dlPeriod": soup.find('option', string='All Day (08:00 - 22:00)')['value'],
+            # formate to output the timetable in
+            "dlType": soup.find('option', string='List Timetable (with calendar dates)')['value'],
+            # select button to submit form
+            "bGetTimetable": "View Timetable"
+        }
         resp = session.post(TIMETABLE, data=formdata)
 
         return resp.text
