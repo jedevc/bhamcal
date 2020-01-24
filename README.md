@@ -10,6 +10,15 @@ work on [OnlineBhamTimetableConverter][timetable-converter]. It's a great
 project, however, I'm generally unhappy about having to give my password off
 to third-party services, and I just need a simple command line tool.
 
+## Quick start
+
+You can get started easily using the prebuilt docker image:
+
+    $ docker run -ti -v $(pwd):/data jedevc/bhamcal <username> -f /data/out.ical
+
+An iCalendar file will be created in your current directory that you can then
+install into whatever mail app you use.
+
 ## Installation
 
 bhamcal requires at least python 3.7, as it uses some slightly more modern
@@ -124,6 +133,16 @@ Then, you can run the tool using:
 
 If you add new dependencies, make sure that they are reflected in both
 `requirements.txt` and `setup.py`.
+
+## Docker
+
+To build the Docker image:
+
+    $ docker build -t bhamcal .
+
+To run it:
+
+    $ docker run -ti -v $(pwd):/data bhamcal
 
 ## License
 
